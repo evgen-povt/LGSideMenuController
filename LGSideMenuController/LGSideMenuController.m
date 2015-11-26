@@ -849,14 +849,18 @@ NSString *const kLGSideMenuControllerDidDismissRightViewNotification  = @"kLGSid
     }
 }
 
+- (void)setLayer:(CALayer *)layer withBorderWidth:(CGFloat)borderWidth borderColor:(UIColor *)borderColor shadowRadius:(CGFloat)shadowRadius shadowColor:(UIColor *)shadowColor {
+    layer.borderWidth = borderWidth;
+    layer.borderColor = borderColor.CGColor;
+    layer.shadowRadius = shadowRadius;
+    layer.shadowColor = shadowColor.CGColor;
+}
+
 - (void)colorsInvalidate
 {
     if (_rootViewStyleView)
     {
-        _rootViewStyleView.layer.borderWidth = _rootViewLayerBorderWidth;
-        _rootViewStyleView.layer.borderColor = _rootViewLayerBorderColor.CGColor;
-        _rootViewStyleView.layer.shadowColor = _rootViewLayerShadowColor.CGColor;
-        _rootViewStyleView.layer.shadowRadius = _rootViewLayerShadowRadius;
+        [self setLayer:_rootViewStyleView.layer withBorderWidth:_rootViewLayerBorderWidth borderColor:_rootViewLayerBorderColor shadowRadius:_rootViewLayerShadowRadius shadowColor:_rootViewLayerShadowColor];
     }
 
     if (kLGSideMenuIsLeftViewAlwaysVisible || self.isLeftViewShowing)
@@ -871,10 +875,7 @@ NSString *const kLGSideMenuControllerDidDismissRightViewNotification  = @"kLGSid
         if (_leftViewStyleView)
         {
             _leftViewStyleView.backgroundColor = (kLGSideMenuIsLeftViewAlwaysVisible ? [_leftViewBackgroundColor colorWithAlphaComponent:1.f] : _leftViewBackgroundColor);
-            _leftViewStyleView.layer.borderWidth = _leftViewLayerBorderWidth;
-            _leftViewStyleView.layer.borderColor = _leftViewLayerBorderColor.CGColor;
-            _leftViewStyleView.layer.shadowColor = _leftViewLayerShadowColor.CGColor;
-            _leftViewStyleView.layer.shadowRadius = _leftViewLayerShadowRadius;
+            [self setLayer:_leftViewStyleView.layer withBorderWidth:_leftViewLayerBorderWidth borderColor:_leftViewLayerBorderColor shadowRadius:_leftViewLayerShadowRadius shadowColor:_leftViewLayerShadowColor];
         }
 
         if (_leftViewBackgroundImage)
@@ -893,15 +894,28 @@ NSString *const kLGSideMenuControllerDidDismissRightViewNotification  = @"kLGSid
         if (_rightViewStyleView)
         {
             _rightViewStyleView.backgroundColor = (kLGSideMenuIsRightViewAlwaysVisible ? [_rightViewBackgroundColor colorWithAlphaComponent:1.f] : _rightViewBackgroundColor);
-            _rightViewStyleView.layer.borderWidth = _rightViewLayerBorderWidth;
-            _rightViewStyleView.layer.borderColor = _rightViewLayerBorderColor.CGColor;
-            _rightViewStyleView.layer.shadowColor = _rightViewLayerShadowColor.CGColor;
-            _rightViewStyleView.layer.shadowRadius = _rightViewLayerShadowRadius;
+            [self setLayer:_rightViewStyleView.layer withBorderWidth:_rightViewLayerBorderWidth borderColor:_rightViewLayerBorderColor shadowRadius:_rightViewLayerShadowRadius shadowColor:_rightViewLayerShadowColor];
         }
 
         if (_rightViewBackgroundImage)
             _backgroundImageViewForRightView.image = _rightViewBackgroundImage;
     }
+}
+
+- (void)showLeftSide:(BOOL)show {
+    _rootViewCoverViewForLeftView.hidden = !show;
+    _leftViewCoverView.hidden = !show;
+    _leftView.hidden = !show;
+    _leftViewStyleView.hidden = !show;
+    _backgroundImageViewForLeftView.hidden = !show;
+}
+
+- (void)showRightSide:(BOOL)show {
+    _rootViewCoverViewForRightView.hidden = !show;
+    _rightViewCoverView.hidden = !show;
+    _rightView.hidden = !show;
+    _rightViewStyleView.hidden = !show;
+    _backgroundImageViewForRightView.hidden = !show;
 }
 
 - (void)hiddensInvalidate
@@ -932,31 +946,19 @@ NSString *const kLGSideMenuControllerDidDismissRightViewNotification  = @"kLGSid
         {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^(void)
                            {
-                               _rootViewCoverViewForLeftView.hidden = YES;
-                               _leftViewCoverView.hidden = YES;
-                               _leftView.hidden = YES;
-                               _leftViewStyleView.hidden = YES;
-                               _backgroundImageViewForLeftView.hidden = YES;
+                               [self showLeftSide:NO];
                            });
         }
         else
         {
-            _rootViewCoverViewForLeftView.hidden = YES;
-            _leftViewCoverView.hidden = YES;
-            _leftView.hidden = YES;
-            _leftViewStyleView.hidden = YES;
-            _backgroundImageViewForLeftView.hidden = YES;
+            [self showLeftSide:NO];
         }
 
         rootViewStyleViewHiddenForLeftView = YES;
     }
     else if (self.isLeftViewShowing)
     {
-        _rootViewCoverViewForLeftView.hidden = NO;
-        _leftViewCoverView.hidden = NO;
-        _leftView.hidden = NO;
-        _leftViewStyleView.hidden = NO;
-        _backgroundImageViewForLeftView.hidden = NO;
+        [self showLeftSide:YES];
 
         rootViewStyleViewHiddenForLeftView = NO;
     }
@@ -979,31 +981,19 @@ NSString *const kLGSideMenuControllerDidDismissRightViewNotification  = @"kLGSid
         {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^(void)
                            {
-                               _rootViewCoverViewForRightView.hidden = YES;
-                               _rightViewCoverView.hidden = YES;
-                               _rightView.hidden = YES;
-                               _rightViewStyleView.hidden = YES;
-                               _backgroundImageViewForRightView.hidden = YES;
+                               [self showRightSide:NO];
                            });
         }
         else
         {
-            _rootViewCoverViewForRightView.hidden = YES;
-            _rightViewCoverView.hidden = YES;
-            _rightView.hidden = YES;
-            _rightViewStyleView.hidden = YES;
-            _backgroundImageViewForRightView.hidden = YES;
+            [self showRightSide:NO];
         }
 
         rootViewStyleViewHiddenForRightView = YES;
     }
     else if (self.isRightViewShowing)
     {
-        _rootViewCoverViewForRightView.hidden = NO;
-        _rightViewCoverView.hidden = NO;
-        _rightView.hidden = NO;
-        _rightViewStyleView.hidden = NO;
-        _backgroundImageViewForRightView.hidden = NO;
+        [self showRightSide:YES];
 
         rootViewStyleViewHiddenForRightView = NO;
     }
@@ -1228,13 +1218,13 @@ NSString *const kLGSideMenuControllerDidDismissRightViewNotification  = @"kLGSid
         _rightViewStyleView.hidden = YES;
         _rightViewStyleView.backgroundColor = [UIColor colorWithWhite:0.3 alpha:0.9];
         _rightViewStyleView.layer.masksToBounds = NO;
-        _rightViewStyleView.layer.borderWidth = 2.f;
-        _rightViewStyleView.layer.borderColor = [UIColor colorWithRed:0.f green:0.5 blue:1.f alpha:1.f].CGColor;
-        _rightViewStyleView.layer.shadowColor = [UIColor colorWithWhite:0.f alpha:0.5].CGColor;
         _rightViewStyleView.layer.shadowOffset = CGSizeZero;
         _rightViewStyleView.layer.shadowOpacity = 1.f;
-        _rightViewStyleView.layer.shadowRadius = 5.f;
         _rightViewStyleView.layer.shouldRasterize = YES;
+        
+        // Why do we need the hardcoded values? The Left style view doesn't have that
+        [self setLayer:_rightViewStyleView.layer withBorderWidth:2.f borderColor:[UIColor colorWithRed:0.f green:0.5 blue:1.f alpha:1.f] shadowRadius:5.f shadowColor:[UIColor colorWithWhite:0.f alpha:0.5]];
+        
         [self.view insertSubview:_rightViewStyleView belowSubview:_rightView];
     }
 
