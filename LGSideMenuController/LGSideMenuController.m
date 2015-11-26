@@ -92,6 +92,18 @@
 ((kLGSideMenuStatusBarOrientationIsPortrait && (_rightViewStatusBarVisibleOptions & LGSideMenuStatusBarVisibleOnPadPortrait)) || \
 (kLGSideMenuStatusBarOrientationIsLandscape && (_rightViewStatusBarVisibleOptions & LGSideMenuStatusBarVisibleOnPadLandscape))))))
 
+
+NSString *const kLGSideMenuControllerWillShowLeftViewNotification    = @"kLGSideMenuControllerWillShowLeftViewNotification";
+NSString *const kLGSideMenuControllerWillDismissLeftViewNotification = @"kLGSideMenuControllerWillDismissLeftViewNotification";
+NSString *const kLGSideMenuControllerDidShowLeftViewNotification     = @"kLGSideMenuControllerDidShowLeftViewNotification";
+NSString *const kLGSideMenuControllerDidDismissLeftViewNotification  = @"kLGSideMenuControllerDidDismissLeftViewNotification";
+
+NSString *const kLGSideMenuControllerWillShowRightViewNotification    = @"kLGSideMenuControllerWillShowRightViewNotification";
+NSString *const kLGSideMenuControllerWillDismissRightViewNotification = @"kLGSideMenuControllerWillDismissRightViewNotification";
+NSString *const kLGSideMenuControllerDidShowRightViewNotification     = @"kLGSideMenuControllerDidShowRightViewNotification";
+NSString *const kLGSideMenuControllerDidDismissRightViewNotification  = @"kLGSideMenuControllerDidDismissRightViewNotification";
+
+
 @interface LGSideMenuView : UIView
 
 @property (strong, nonatomic) void (^layoutSubviewsHandler)();
